@@ -1,5 +1,8 @@
+import { useState } from "react";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
+import { ImCheckboxUnchecked } from "react-icons/im";
+import { IoCheckbox } from "react-icons/io5";
 
 type ShowtaskType = {
   task: any;
@@ -7,9 +10,23 @@ type ShowtaskType = {
 };
 
 const ShowTask: React.FC<ShowtaskType> = ({ task, setTask }) => {
+  const [checkedTasks, setCheckedTasks] = useState<{
+    [taskId: string]: boolean;
+  }>({});
   const handleDelete = (taskId: string) => {
     const updatedTasks = task.filter((item: any) => item.id !== taskId);
     setTask(updatedTasks);
+  };
+
+  const checkedCount = Object.values(checkedTasks).filter(
+    (isChecked) => isChecked
+  ).length;
+
+  const handleChange = (taskId: string) => {
+    setCheckedTasks((prevCheckedTasks) => ({
+      ...prevCheckedTasks,
+      [taskId]: !prevCheckedTasks[taskId] || false,
+    }));
   };
   return (
     <div className="flex flex-col gap-3">
@@ -20,7 +37,19 @@ const ShowTask: React.FC<ShowtaskType> = ({ task, setTask }) => {
           flex items-center justify-between px-1 "
             key={item.id}
           >
-            <div className="flex gap-1">
+            <div
+              onClick={() => handleChange(item.id)}
+              className="flex gap-1 items-center"
+            >
+              {checkedTasks[item.id] ? (
+                <div className="text-orange-500">
+                  <IoCheckbox />
+                </div>
+              ) : (
+                <div className="text-orange-500">
+                  <ImCheckboxUnchecked />
+                </div>
+              )}
               <p>{item.value}</p>
               <p>{item.priority}</p>
             </div>
@@ -38,6 +67,11 @@ const ShowTask: React.FC<ShowtaskType> = ({ task, setTask }) => {
           </li>
         ))}
       </ul>
+      <div className="flex gap-x-2 border border-gray-400">
+        <p>Total Task: {task.length}</p>
+        <p>Complete Task: {checkedCount}</p>
+        <p>Incomplete Task: {task.length - checkedCount}</p>
+      </div>
     </div>
   );
 };
