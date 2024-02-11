@@ -1,0 +1,1 @@
+This is a simple to do app using next js
