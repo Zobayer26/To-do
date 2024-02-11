@@ -3,15 +3,18 @@
 import { useState,useEffect } from "react";
 import ShowTask from "./ShowTask";
 
-const getLocalData=()=>{
-  const data =localStorage.getItem('tasks')
-   if(data){
-       return JSON.parse(localStorage.getItem('tasks') ||'[]')
-   }
-   else{
-       return []
-   }
-}
+const getLocalData = () => {
+  if (typeof window !== "undefined") {
+    const data = localStorage.getItem("tasks");
+    if (data) {
+      return JSON.parse(localStorage.getItem("tasks") || "[]");
+    } else {
+      return [];
+    }
+  } else {
+    return [];
+  }
+};
 const AddItem = () => {
   const [newPriority, setNewPriority] = useState("medium");
   const [task, setTask] = useState<any>(getLocalData());
