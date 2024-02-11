@@ -5,7 +5,12 @@ type ShowtaskType = {
   task: any;
   setTask: any;
 };
+
 const ShowTask: React.FC<ShowtaskType> = ({ task, setTask }) => {
+  const handleDelete = (taskId: string) => {
+    const updatedTasks = task.filter((item: any) => item.id !== taskId);
+    setTask(updatedTasks);
+  };
   return (
     <div className="flex flex-col gap-3">
       <ul className="flex flex-col  gap-2 px-2">
@@ -20,10 +25,13 @@ const ShowTask: React.FC<ShowtaskType> = ({ task, setTask }) => {
               <p>{item.priority}</p>
             </div>
             <div className="text-red-500  flex items-center gap-2">
-              <div className="hover:text-orange-300">
+              <div className="hover:text-orange-300 ">
                 <FaEdit />
               </div>
-              <div className="hover:text-orange-300">
+              <div
+                onClick={() => handleDelete(item.id)}
+                className="hover:text-orange-300"
+              >
                 <MdDelete />
               </div>
             </div>
