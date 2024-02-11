@@ -1,16 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import ShowTask from "./ShowTask";
 
+const getLocalData=()=>{
+  const data =localStorage.getItem('tasks')
+   if(data){
+       return JSON.parse(localStorage.getItem('tasks') ||'[]')
+   }
+   else{
+       return []
+   }
+}
 const AddItem = () => {
   const [newPriority, setNewPriority] = useState("medium");
-  const [task, setTask] = useState<any>([]);
+  const [task, setTask] = useState<any>(getLocalData());
   const [text, setText] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(task))
+}, [task])
 
   const handleAddTask = () => {
     if (text == "") {
-      alert("please insert text");
+      alert("please insert  task");
     } else {
       const newitem = {
         id: Math.floor(Math.random() * 1000),

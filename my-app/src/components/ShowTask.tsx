@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import { ImCheckboxUnchecked } from "react-icons/im";
@@ -9,18 +9,29 @@ type ShowtaskType = {
   setTask: any;
 };
 
+const getLocalCheckedData = () => {
+  const data = localStorage.getItem("checkedStatus") || "{}";
+  try {
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Error parsing local storage data for checkedStatus:", error);
+    return {};
+  }
+};
+
 const ShowTask: React.FC<ShowtaskType> = ({ task, setTask }) => {
   const [checkedTasks, setCheckedTasks] = useState<{
     [taskId: string]: boolean;
-  }>({});
+  }>(getLocalCheckedData());
+
+  useEffect(() => {
+    localStorage.setItem("checkedStatus", JSON.stringify(checkedTasks));
+  }, [checkedTasks]);
+
   const handleDelete = (taskId: string) => {
     const updatedTasks = task.filter((item: any) => item.id !== taskId);
     setTask(updatedTasks);
   };
-
-  const checkedCount = Object.values(checkedTasks).filter(
-    (isChecked) => isChecked
-  ).length;
 
   const handleChange = (taskId: string) => {
     setCheckedTasks((prevCheckedTasks) => ({
@@ -28,6 +39,11 @@ const ShowTask: React.FC<ShowtaskType> = ({ task, setTask }) => {
       [taskId]: !prevCheckedTasks[taskId] || false,
     }));
   };
+
+  const checkedCount = Object.values(checkedTasks).filter(
+    (isChecked) => isChecked
+  ).length;
+
   return (
     <div className="flex flex-col gap-3">
       <ul className="flex flex-col  gap-2 px-2">
