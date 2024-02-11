@@ -10,11 +10,16 @@ type ShowtaskType = {
 };
 
 const getLocalCheckedData = () => {
-  const data = localStorage.getItem("checkedStatus") || "{}";
-  try {
-    return JSON.parse(data);
-  } catch (error) {
-    console.error("Error parsing local storage data for checkedStatus:", error);
+  if (typeof window !== 'undefined') {
+    const data = localStorage.getItem("checkedStatus") || "{}";
+    try {
+      return JSON.parse(data);
+    } catch (error) {
+      console.error("Error parsing local storage data for checkedStatus:", error);
+      return {};
+    }
+  } else {
+    
     return {};
   }
 };
