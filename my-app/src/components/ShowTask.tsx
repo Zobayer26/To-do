@@ -23,6 +23,7 @@ const ShowTask: React.FC<ShowtaskType> = ({ task, setTask }) => {
   const [checkedTasks, setCheckedTasks] = useState<{
     [taskId: string]: boolean;
   }>(getLocalCheckedData());
+  const [priorityFilter, setPriorityFilter] = useState<string | null>(null);
 
   useEffect(() => {
     localStorage.setItem("checkedStatus", JSON.stringify(checkedTasks));
@@ -40,6 +41,10 @@ const ShowTask: React.FC<ShowtaskType> = ({ task, setTask }) => {
     }));
   };
 
+  const filteredTasks = priorityFilter
+    ? task.filter((item: any) => item.priority === priorityFilter)
+    : task;
+
   const checkedCount = Object.values(checkedTasks).filter(
     (isChecked) => isChecked
   ).length;
@@ -47,7 +52,19 @@ const ShowTask: React.FC<ShowtaskType> = ({ task, setTask }) => {
   return (
     <div className="flex flex-col gap-3">
       <ul className="flex flex-col  gap-2 px-2">
-        {task.map((item: any) => (
+        <div className="mx-auto border border-black rounded">
+          <label className="mr-2">Filter Task Priority:</label>
+          <select
+            onChange={(e) => setPriorityFilter(e.target.value)}
+            value={priorityFilter || ""}
+          >
+            <option value="">All</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        {filteredTasks.map((item: any) => (
           <li
             className="p-1 border rounded hover:border-orange-500
           flex items-center justify-between px-1 "
@@ -66,8 +83,13 @@ const ShowTask: React.FC<ShowtaskType> = ({ task, setTask }) => {
                   <ImCheckboxUnchecked />
                 </div>
               )}
-              <p>{item.value}</p>
-              <p>{item.priority}</p>
+              {item.priority == "low" ? (
+                <p className="text-green-500">{item.value}</p>
+              ) : item.priority == "high" ? (
+                <p className="text-blue-500">{item.value}</p>
+              ) : (
+                <p className="text-red-500">{item.value}</p>
+              )}
             </div>
             <div className="text-red-500  flex items-center gap-2">
               <div className="hover:text-orange-300 ">
